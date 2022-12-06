@@ -1,0 +1,18 @@
+---
+- name: Import service tasks
+  include_tasks: service.yml
+
+- name: Wait for node-token
+  become: true
+  ansible.builtin.wait_for:
+    path: "{{ k3s_server_location }}/server/node-token"
+
+- name: Read node-token from master
+  become: true
+  ansible.builtin.slurp:
+    path: "{{ k3s_server_location }}/server/node-token"
+  register: node_token
+
+- name: Store Master node-token
+  ansible.builtin.set_fact:
+    token: "{{ node_token.content | b64decode | regex_replace('\n', '') }}"

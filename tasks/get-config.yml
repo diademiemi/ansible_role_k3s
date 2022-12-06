@@ -1,0 +1,14 @@
+---
+- block:
+  - name: Read k3s.yaml
+    become: true
+    ansible.builtin.slurp:
+      src: /etc/rancher/k3s/k3s.yaml
+    register: kubeconfig
+
+  - name: Copy config file to ansible host
+    ansible.builtin.copy:
+      content: "{{ kubeconfig.content | b64decode | replace('https://127.0.0.1:6443', 'https://'~k3s_master_ip~':6443') }}"
+      dest: "{{ k3s_kubeconfig_local_dest }}"
+      mode: "u=rw,g=,o="
+    delegate_to: localhost

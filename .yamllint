@@ -1,0 +1,3 @@
+rules:
+  line-length: disable
+  meta-no-info: disable

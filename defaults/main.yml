@@ -1,0 +1,13 @@
+---
+k3s_version: "v1.24.8+k3s1"
+k3s_server_location: /var/lib/rancher/k3s
+k3s_systemd_dir: /etc/systemd/system
+k3s_kubeconfig_local_dest: ./kubeconfig.yaml
+k3s_extra_server_args: ""
+k3s_role: worker
+
+k3s_architecture_map:
+  x86_64: ""
+  aarch64: "-arm64"
+  armv7l: "-armhf"
+  s390x: "-s390x"
