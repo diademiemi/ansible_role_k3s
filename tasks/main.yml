@@ -9,12 +9,13 @@
     group: root
     mode: 0755
 
-- ansible.builtin.include_tasks: master.yml
+- name: Include tasks for master host
+  ansible.builtin.include_tasks: master.yml
   tags: master
   when: k3s_role == "master"
 
 - name: Remove untargeted hosts from hostvars
-  set_fact:
+  ansible.builtin.set_fact:
     play_hostvars: "{{ play_hostvars | default({}) | combine({item.key: item.value}) }}"
   when: item.key in ansible_play_hosts
   loop: "{{ hostvars | dict2items }}"
@@ -26,10 +27,13 @@
     ip_query: "* | [?k3s_role==`master`].ansible_default_ipv4.address"
   when: k3s_master_ip is not defined
 
-- ansible.builtin.include_tasks: get-config.yml
+- name: Retrieve the Kubeconfig file
+  ansible.builtin.include_tasks: get-config.yml
   tags: get-config
   when: k3s_role == "master"
-- ansible.builtin.include_tasks: workers.yml
+
+- name: Include tasks for worker nodes
+  ansible.builtin.include_tasks: workers.yml
   tags: nodes
   when: k3s_role == "worker"
 
