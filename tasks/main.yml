@@ -13,9 +13,15 @@
   tags: master
   when: k3s_role == "master"
 
+- name: Remove untargeted hosts from hostvars
+  set_fact:
+    play_hostvars: "{{ play_hostvars | default({}) | combine({item.key: item.value}) }}"
+  when: item.key in ansible_play_hosts
+  loop: "{{ hostvars | dict2items }}"
+
 - name: Set k3s_master_ip if not defined
   ansible.builtin.set_fact:
-    k3s_master_ip: "{{ hostvars | json_query(ip_query) | first }}"
+    k3s_master_ip: "{{ play_hostvars | json_query(ip_query) | first }}"
   vars:
     ip_query: "* | [?k3s_role==`master`].ansible_default_ipv4.address"
   when: k3s_master_ip is not defined
