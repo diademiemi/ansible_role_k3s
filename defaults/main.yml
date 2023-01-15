@@ -11,3 +11,5 @@ k3s_architecture_map:
   aarch64: "-arm64"
   armv7l: "-armhf"
   s390x: "-s390x"
+
+k3s_retrieve_kubeconfig: true

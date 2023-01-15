@@ -30,7 +30,7 @@
 - name: Retrieve the Kubeconfig file
   ansible.builtin.include_tasks: get-config.yml
   tags: get-config
-  when: k3s_role == "master"
+  when: k3s_retrieve_kubeconfig and k3s_role == "master"
 
 - name: Include tasks for worker nodes
   ansible.builtin.include_tasks: workers.yml
