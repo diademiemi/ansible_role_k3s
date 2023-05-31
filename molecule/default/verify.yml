@@ -5,8 +5,14 @@
   hosts: all
   gather_facts: false
   tasks:
-    - name: Example assertion
-      ansible.builtin.assert:
-        that: true
+    - name: Check if /usr/local/bin/k3s exists
+      ansible.builtin.stat:
+        path: /usr/local/bin/k3s
+      register: k3s_file
+
+    - name: Fail if k3s does not exists
+      ansible.builtin.fail:
+        msg: "K3S did not install"
+      when: not k3s_file.stat.exists
 
 ...
