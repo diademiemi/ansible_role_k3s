@@ -14,7 +14,7 @@
     k3s_first_master: "{{ host.inventory_hostname }}"
   vars:
     query: "* | [?k3s_role==`master`]"
-    host: "{{ hostvars | json_query(query) | sort | first }}"  
+    host: "{{ hostvars | json_query(query) | first }}"
 
 - name: Include tasks for first master host
   ansible.builtin.include_tasks: common/init.yml
