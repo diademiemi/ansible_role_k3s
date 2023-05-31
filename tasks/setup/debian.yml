@@ -2,13 +2,7 @@
 - name: Install Kubernetes volume dependencies
   become: true
   ansible.builtin.apt:
-    name: "{{ item }}"
+    name: "{{ k3s_dependencies }}"
     state: present
-  with_items:
-    - open-iscsi
-    - nfs-kernel-server
-    - nfs-common
 
-- name: "Import main tasks"
-  ansible.builtin.include_tasks: common/main.yml
 ...

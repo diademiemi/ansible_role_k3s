@@ -1,0 +1,7 @@
+---
+_k3s_dependencies:
+  - open-iscsi
+  - nfs-kernel-server
+  - nfs-common
+
+...

@@ -1,0 +1,64 @@
+---
+- name: Download k3s binary
+  become: true
+  ansible.builtin.get_url:
+    url: https://github.com/k3s-io/k3s/releases/download/{{ k3s_version }}{{ k3s_architecture_map[ansible_architecture] }}/k3s
+    checksum: sha256:https://github.com/k3s-io/k3s/releases/download/{{ k3s_version }}/sha256sum-amd64.txt
+    dest: /usr/local/bin/k3s
+    owner: root
+    group: root
+    mode: "0755"
+
+- name: Select one host as the first master
+  ansible.builtin.set_fact:
+    k3s_first_master: "{{ inventory_hostname }}"
+  when: k3s_role == "master" and k3s_first_master == ""
+  run_once: true
+
+- name: Include tasks for first master host
+  ansible.builtin.include_tasks: common/init.yml
+  when: k3s_first_master == inventory_hostname
+
+# - name: Remove untargeted hosts from hostvars
+#   ansible.builtin.set_fact:
+#     play_hostvars: "{{ play_hostvars | default({}) | combine({item.key: item.value}) }}"
+#   when: item.key in ansible_play_hosts
+#   loop: "{{ hostvars | dict2items }}"
+
+- name: Set k3s_master_ip if not defined
+  ansible.builtin.set_fact:
+    k3s_master_ip: "{{ hostvars[k3s_first_master].ansible_default_ipv4 }}"
+  # vars:
+  #   ip_query: "* | [?k3s_first_master==`{{ inventory_hostname }}`].ansible_default_ipv4.address"
+  when: k3s_master_ip is not defined
+
+- name: Retrieve the Kubeconfig file
+  ansible.builtin.include_tasks: common/get-config.yml
+  tags: get-config
+  when: k3s_retrieve_kubeconfig and k3s_first_master == inventory_hostname
+
+- name: Copy K3s service file to all hosts
+  become: true
+  ansible.builtin.template:
+    src: "k3s.service.j2"
+    dest: "{{ k3s_systemd_dir }}/k3s.service"
+    owner: root
+    group: root
+    mode: "0644"
+  notify: Enable and restart K3s service
+
+- name: Create kubectl symlink
+  become: true
+  ansible.builtin.file:
+    src: /usr/local/bin/k3s
+    dest: /usr/local/bin/kubectl
+    state: link
+
+- name: Create crictl symlink
+  become: true
+  ansible.builtin.file:
+    src: /usr/local/bin/k3s
+    dest: /usr/local/bin/crictl
+    state: link
+
+...

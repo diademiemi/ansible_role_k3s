@@ -1,0 +1,6 @@
+---
+_k3s_dependencies:
+  - iscsi-initiator-utils
+  - nfs-utils
+
+...

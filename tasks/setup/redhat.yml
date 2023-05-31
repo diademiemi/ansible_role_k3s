@@ -2,13 +2,7 @@
 - name: Install Kubernetes volume dependencies
   become: true
   ansible.builtin.yum:
-    name: "{{ item }}"
+    name: "{{ k3s_dependencies }}"
     state: present
-  with_items:
-    - iscsi-initiator-utils
-    - nfs-utils
-  when: ansible_os_family == "RedHat"
 
-- name: "Import main tasks"
-  ansible.builtin.include_tasks: common/main.yml
 ...

@@ -8,9 +8,13 @@ Type=notify
 ExecStartPre=-/sbin/modprobe br_netfilter
 ExecStartPre=-/sbin/modprobe overlay
 {% if k3s_role == "master" %}
+{% if k3s_first_master == inventory_hostname %}
 ExecStart=/usr/local/bin/k3s server --data-dir {{ k3s_server_location }} {{ k3s_extra_server_args | default("") }}
 {% else %}
-ExecStart=/usr/local/bin/k3s agent --server https://{{ k3s_master_ip }}:6443 --token {{ play_hostvars | json_query("* | [?k3s_role==`master`].token") | first }} {{ k3s_extra_server_args | default("") }}
+ExecStart=/usr/local/bin/k3s server --server https://{{ k3s_master_ip }}:6443 --token {{ hostvars[k3s_first_master].token }} --data-dir {{ k3s_server_location }} {{ k3s_extra_server_args | default("") }}
+{% endif %}
+{% else %}
+ExecStart=/usr/local/bin/k3s agent --server https://{{ k3s_master_ip }}:6443 --token {{ hostvars[k3s_first_master].token }} {{ k3s_extra_server_args | default("") }}
 {% endif %}
 KillMode=process
 Delegate=yes

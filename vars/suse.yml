@@ -1,0 +1,7 @@
+---
+_k3s_dependencies:
+  - iscsi-initiator-utils
+  - nfs-utils
+  - k3s-selinux
+
+...

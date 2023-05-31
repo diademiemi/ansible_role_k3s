@@ -4,15 +4,10 @@
   community.general.zypper:
     name: "{{ item }}"
     state: present
-  with_items:
-    - open-iscsi
-    - nfs-utils
-    - k3s-selinux
+  with_items: "{{ k3s_dependencies }}"
   notify: Reboot host
 
 - name: Flush handlers
   ansible.builtin.meta: flush_handlers
 
-- name: "Import main tasks"
-  ansible.builtin.include_tasks: common/main.yml
 ...

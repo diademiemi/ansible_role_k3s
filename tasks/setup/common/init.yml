@@ -1,6 +1,16 @@
 ---
-- name: Import service tasks
-  ansible.builtin.include_tasks: service.yml
+- name: Copy K3s service file
+  become: true
+  ansible.builtin.template:
+    src: "k3s.service.j2"
+    dest: "{{ k3s_systemd_dir }}/k3s.service"
+    owner: root
+    group: root
+    mode: "0644"
+  notify: Enable and restart K3s service
+
+- name: Start service
+  ansible.builtin.meta: flush_handlers
 
 - name: Wait for node-token
   become: true
@@ -16,3 +26,5 @@
 - name: Store Master node-token
   ansible.builtin.set_fact:
     token: "{{ node_token.content | b64decode | regex_replace('\n', '') }}"
+
+...

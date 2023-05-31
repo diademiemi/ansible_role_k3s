@@ -1,4 +1,12 @@
 ---
+- name: Enable and restart K3s service
+  become: true
+  ansible.builtin.systemd:
+    name: k3s
+    daemon_reload: true
+    state: restarted
+    enabled: true
+
 - name: "Reboot host"
   become: true
   ansible.builtin.reboot:

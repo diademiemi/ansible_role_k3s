@@ -1,76 +1,81 @@
-# k3s
+Ansible Role Template
+=========
 
-This is a role to install K3S on one or more hosts. It is a modified version of the upstream K3S role. It downloads the K3S binary from GitHub releases, so this should work on any host that can run K3S. Tested on CentOS 7, 8 Stream and 9 Stream.  
+[![Molecule Test](https://github.com/diademiemi/ansible_role_k3s/actions/workflows/molecule.yml/badge.svg)](https://github.com/diademiemi/ansible_role_k3s/actions/workflows/molecule.yml)
 
-This role consolidates the upstream K3S worker role and the K3S master role into one role. It uses the currently targeted hosts as cluster members.
+This is an Ansible role to install and configure k3s.
 
-## Requirements
+Include more information about k3s in this section.
 
-- Hosts capable of running K3S. 
+Requirements
+------------
+These platforms are supported:
+- Ubuntu 20.04  
+- Ubuntu 22.04  
+- Debian 10  
+- Debian 11  
+- EL 8 (Tested on Rocky Linux 8)  
+- EL 9 (Tested on Rocky Linux 9)  
+- Fedora 38  
 
-## Variables
-| Variable | Default | Description |
-|----------|---------|-------------|
-| `k3s_version` | `"v1.26.1+k3s1"` | The version of K3S to install. |
-| `k3s_server_location` | `"/var/lib/rancher/k3s"` | The location of the K3S data directory. |
-| `k3s_systemd_dir` | `"/etc/systemd/system"` | The location of the systemd directory. |
-| `k3s_retrieve_kubeconfig` | `true` | Whether to retrieve the kubeconfig from the master node. |
-| `k3s_kubeconfig_local_dest` | `"./kubeconfig.yaml"` | Where to download the kubeconfig to. Skip with `--skip-tags=get-config`. |
-| `k3s_extra_server_args` | `""` | Extra arguments to pass to the K3S server. |
-| `k3s_role` | `"master"` | The role of the host. Can be `master` or `worker`. At least one host needs to be `master`! |
-| `k3s_master_ip` | `""` | The IP address of the master node. If unset will be gotten from the first host with the `master` role. |
+<!-- 
+- List hardware requirements here  
+-->
 
-## Configuration
+Role Variables
+--------------
 
-This role will install a K3S cluster on one or multiple hosts.  
-The `k3s_role` variable must be set to `master` on at least one host.  
-The `k3s_master_ip` variable can be set to manually set the IP address of the master node that should be used to connect to the cluster.  
-If this variable is not set, the first host with the `master` role will be used.  
+Variable | Default | Description
+--- | --- | ---
+<!--
+`variable` | `default` | Variable example
+`long_variable` | See [defaults/main.yml](./defaults/main.yml) | Variable referring to defaults
+`distro_specific_variable` | See [vars/debian.yml](./vars/debian.yml) | Variable referring to distro-specific variables
+-->
 
+Dependencies
+------------
+<!-- List dependencies on other roles or criteria -->
+None
 
-### Example
-
-The following is an example of a playbook that uses this role.  
-
-<details> <summary> <code> inventory.ini </code> </summary>
-
-```ini
-[k3s]
-server1
-server2
-server3
-```
-
-</details>
-
-<details> <summary> <code> group_vars/all.yml </code> </summary>
+Example Playbook
+----------------
 
 ```yaml
-k3s_version: "v1.24.8+k3s1"
-k3s_server_location: /var/lib/rancher/k3s
-k3s_systemd_dir: /etc/systemd/system
-k3s_kubeconfig_local_dest: ./kubeconfig.yaml
-k3s_extra_server_args: ""
-```
-
-</details>
-
-
-<details> <summary> <code> host_vars/server1.yml </code> </summary>
-
-```yaml
-k3s_role: master
+    - role: "diademiemi.k3s"
+      vars:
+        __role_action: # Variable to control which tasks are ran
+          - "setup" # Default if none is given
+          # - "upstream" # Uncomment to delegate to role from upstream provider
+      tags: ['diademiemi', 'k3s', 'setup']    ```
 
 ```
 
-</details>
+License
+-------
 
-<details> <summary> <code> playbook.yml </code> </summary>
+MIT
 
-```yaml
-- hosts: k3s
-  roles:
-    - k3s_cluster
+Author Information
+------------------
+
+- diademiemi (@diademiemi)
+
+Role Testing
+------------
+
+This repository comes with Molecule tests for Docker on the supported platforms.
+Install Molecule by running
+
+```bash
+pip3 install -r requirements.txt
 ```
 
-</details>
+Run the tests with
+
+```bash
+molecule test
+```
+
+These tests are automatically ran by GitHub Actions on push. If the tests are successful, the role is automatically published to Ansible Galaxy.
+

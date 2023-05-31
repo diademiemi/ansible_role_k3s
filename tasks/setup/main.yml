@@ -1,5 +1,0 @@
----
-- name: "Import main tasks"
-  ansible.builtin.include_tasks: common/main.yml
-
-...
