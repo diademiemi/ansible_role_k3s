@@ -11,9 +11,10 @@
 
 - name: Select one host as the first master
   ansible.builtin.set_fact:
-    k3s_first_master: "{{ inventory_hostname }}"
-  when: k3s_role == "master" and k3s_first_master == ""
-  run_once: true
+    k3s_first_master: "{{ host.inventory_hostname }}"
+  vars:
+    query: "* | [?k3s_role==`master`]"
+    host: "{{ hostvars | json_query(query) | sort | first }}"  
 
 - name: Include tasks for first master host
   ansible.builtin.include_tasks: common/init.yml
