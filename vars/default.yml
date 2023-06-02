@@ -1,3 +1,8 @@
 ---
+k3s_architecture_map:
+  x86_64: ""
+  aarch64: "-arm64"
+  armv7l: "-armhf"
+  s390x: "-s390x"
 
 ...
