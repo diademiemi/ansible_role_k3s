@@ -28,7 +28,7 @@
 
 - name: Set k3s_master_ip if not defined
   ansible.builtin.set_fact:
-    k3s_master_ip: "{{ hostvars[k3s_first_master].ansible_default_ipv4 }}"
+    k3s_master_ip: "{{ hostvars[k3s_first_master].ansible_default_ipv4.address }}"
   # vars:
   #   ip_query: "* | [?k3s_first_master==`{{ inventory_hostname }}`].ansible_default_ipv4.address"
   when: k3s_master_ip is not defined
