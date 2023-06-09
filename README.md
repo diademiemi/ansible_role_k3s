@@ -18,7 +18,7 @@ These platforms are supported:
 - EL 9 (Tested on Rocky Linux 9)  
 - Fedora 38  
 
-<!-- 
+<!--
 - List hardware requirements here  
 -->
 
@@ -44,9 +44,9 @@ Example Playbook
 ```yaml
     - role: "diademiemi.k3s"
       vars:
-        __role_action: # Variable to control which tasks are ran
-          - "setup" # Default if none is given
-          # - "upstream" # Uncomment to delegate to role from upstream provider
+        __role_action:  # Variable to control which tasks are ran
+          - "setup"  # Default if none is given
+          # - "upstream"  # Uncomment to delegate to role from upstream provider
       tags: ['diademiemi', 'k3s', 'setup']    ```
 
 ```
@@ -78,4 +78,3 @@ molecule test
 ```
 
 These tests are automatically ran by GitHub Actions on push. If the tests are successful, the role is automatically published to Ansible Galaxy.
-
