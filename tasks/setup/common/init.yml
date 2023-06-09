@@ -9,7 +9,7 @@
     mode: "0644"
   notify: Enable and restart K3s service
 
-- name: Stop Molecule play # We can't really test K3S in Podman in GitHub Actions...
+- name: Stop Molecule play  # We can't really test K3S in Podman/Docker in GitHub Actions...
   ansible.builtin.meta: end_play
   when: "'molecule-notest' in ansible_skip_tags"
 
