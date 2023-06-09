@@ -42,12 +42,13 @@ Example Playbook
 ----------------
 
 ```yaml
+- name: Use diademiemi.k3s role
+  hosts: "{{ target | default('k3s') }}"
+  roles:
     - role: "diademiemi.k3s"
+      tags: ['diademiemi', 'k3s', 'setup']
       vars:
-        __role_action:  # Variable to control which tasks are ran
-          - "setup"  # Default if none is given
-          # - "upstream"  # Uncomment to delegate to role from upstream provider
-      tags: ['diademiemi', 'k3s', 'setup']    ```
+        k3s_role: master # At least one master is required
 
 ```
 
