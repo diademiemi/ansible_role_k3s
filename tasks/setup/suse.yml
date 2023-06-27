@@ -2,8 +2,7 @@
 - name: Install Kubernetes dependencies
   become: true
   community.general.zypper:
-    name: "{{ item }}"
+    name: "{{ k3s_dependencies }}"
     state: present
-  with_items: "{{ k3s_dependencies }}"
 
 ...
