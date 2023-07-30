@@ -15,22 +15,15 @@
   vars:
     query: "* | [?k3s_role==`master`]"
     host: "{{ hostvars | json_query(query) | first }}"
+  when: k3s_first_master is not defined
 
 - name: Include tasks for first master host
   ansible.builtin.include_tasks: common/init.yml
   when: k3s_first_master == inventory_hostname
 
-# - name: Remove untargeted hosts from hostvars
-#   ansible.builtin.set_fact:
-#     play_hostvars: "{{ play_hostvars | default({}) | combine({item.key: item.value}) }}"
-#   when: item.key in ansible_play_hosts
-#   loop: "{{ hostvars | dict2items }}"
-
 - name: Set k3s_master_ip if not defined
   ansible.builtin.set_fact:
     k3s_master_ip: "{{ hostvars[k3s_first_master].ansible_default_ipv4.address }}"
-  # vars:
-  #   ip_query: "* | [?k3s_first_master==`{{ inventory_hostname }}`].ansible_default_ipv4.address"
   when: k3s_master_ip is not defined
 
 - name: Retrieve the Kubeconfig file
