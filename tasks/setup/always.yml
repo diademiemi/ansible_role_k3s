@@ -3,8 +3,8 @@
   become: true
   ansible.builtin.get_url:
     url: https://github.com/k3s-io/k3s/releases/download/{{ k3s_version }}{{ k3s_architecture_suffix_map[ansible_architecture] }}/k3s
-    checksum: "sha256:https://github.com/k3s-io/k3s/releases/download/
-      {{ k3s_version }}/sha256sum{% if k3s_architecture_suffix_map[ansible_architecture] == '' %}-amd64
+    checksum: "sha256:https://github.com/k3s-io/k3s/releases/download/\
+      {{ k3s_version }}/sha256sum{% if k3s_architecture_suffix_map[ansible_architecture] == '' %}-amd64\
       {% else %}{{ k3s_architecture_suffix_map[ansible_architecture] }}{% endif %}.txt"
     dest: /usr/local/bin/k3s
     owner: root
